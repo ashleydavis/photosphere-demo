@@ -1,6 +1,14 @@
 # Photosphere
 
-This is the official ongoing monorepo for Photosphere, a cross-platform application for managing your photos and videos.
+This is a fork of Photosphere with the code for the 100k demo available here:
+https://photosphere-100k.codecapers.com.au/
+
+This repo is a snapshot in time and is not being maintained.
+
+Find the official Photosphere monorepo here:
+https://github.com/ashleydavis/photosphere
+
+Photosphere is a cross-platform application for managing your photos and videos.
 
 Photosphere is designed to be self-hosted and requires the following resources:
 - Host the Docker container
