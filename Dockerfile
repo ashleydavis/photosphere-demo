@@ -1,9 +1,8 @@
-FROM oven/bun:1-alpine AS builder
+FROM oven/bun:1 AS builder
 
 WORKDIR /build
 
-RUN apk update
-RUN apk add zip
+RUN apt-get update && apt-get install -y --no-install-recommends zip && rm -rf /var/lib/apt/lists/*
 
 COPY . .
 
@@ -23,7 +22,7 @@ WORKDIR /build/apps/backend
 RUN bun build --compile --minify --sourcemap --target=bun-linux-x64 --outfile photosphere-server ./src/index.ts
 
 # Have to use the Bun image so that we can install sharp.
-FROM oven/bun:1-alpine 
+FROM oven/bun:1
 
 # Otherwise prefer to use this:
 # FROM alpine:3
