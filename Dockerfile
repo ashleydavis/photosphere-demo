@@ -16,26 +16,18 @@ ENV VITE_NODE_ENV="production"
 # Build the frontend
 RUN bun run build
 
-WORKDIR /build/apps/backend
-
-# Build the backend
-RUN bun build --compile --minify --sourcemap --target=bun-linux-x64 --outfile photosphere-server ./src/index.ts
-
-# Have to use the Bun image so that we can install sharp.
+# Runtime stage: run backend with Bun (no compile)
 FROM oven/bun:1
-
-# Otherwise prefer to use this:
-# FROM alpine:3
 
 WORKDIR /app
 
+# Monorepo layout so workspace deps resolve; sharp and other natives come from builder (linux-x64)
+COPY --from=builder /build/package.json /build/bun.lock ./
+COPY --from=builder /build/node_modules ./node_modules
+COPY --from=builder /build/apps/backend ./apps/backend
+COPY --from=builder /build/packages ./packages
 COPY --from=builder /build/apps/frontend/dist ./public
-COPY --from=builder /build/apps/backend/photosphere-server ./
-
-# Have to add sharp otherwise it doesn't work.
-RUN bun add sharp
 
 ENV FRONTEND_STATIC_PATH=/app/public
 
-CMD ./photosphere-server
-# CMD sleep infinity
+CMD ["bun", "run", "apps/backend/src/index.ts"]
